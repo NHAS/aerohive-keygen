@@ -13,7 +13,7 @@ go build .
 Enter into the restricted shell, and type `_shell`, enter in the generated password.  
 
 ## Todo
-- Add support for generating AP130
+- Add support for generating AP130 keys
 - Detect platform from serial number
 
 
