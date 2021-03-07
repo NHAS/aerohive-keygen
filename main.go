@@ -2,21 +2,18 @@ package main
 
 import (
 	"crypto/md5"
+	"encoding/binary"
 	"flag"
 	"fmt"
 )
 
-func mix_magic_strings(in [16]byte, out *[64]byte) {
+func mix_magic_strings(magic_strings_littlendian []uint32, in [16]byte, out *[64]byte) {
 
-	magic_strings := [32]byte{
-		0xf0, 0x3d, 0xbe, 0x1c,
-		0x14, 0xed, 0x34, 0xd0,
-		0x44, 0x78, 0x48, 0x86,
-		0x39, 0xc3, 0xc2, 0x3d,
-		0xb7, 0xdc, 0x7f, 0x42,
-		0x81, 0x83, 0x6e, 0xf0,
-		0x44, 0x9e, 0x2c, 0xe8,
-		0x30, 0xc1, 0xfc, 0xea,
+	var magic_strings []byte
+	for _, n := range magic_strings_littlendian {
+		bs := make([]byte, 4)
+		binary.LittleEndian.PutUint32(bs, n)
+		magic_strings = append(magic_strings, bs...)
 	}
 
 	swapLocations := [8]int{
@@ -67,24 +64,25 @@ func md5digest2str(input *[16]byte) {
 	}
 }
 
-func main() {
-
-	strSerial := flag.String("serial", "", "Device serial number")
-
-	flag.Parse()
-
-	if len(*strSerial) == 0 {
-		fmt.Println("You need the devices serial number")
-		return
-	}
-
+func AP230(str_serial string) string {
 	platformSecret := [16]byte{'T', 'I', 'U', 't', '8', 'K', 'k', '5', 'A', '7', 'd', '4', 'W', 'i', 'r', 'H'}
 
 	//"02301601202422"
-	serial := []byte(*strSerial)
+	serial := []byte(str_serial)
+
+	magic_strings_littlendian := []uint32{
+		0x1cbe3df0,
+		0xd034ed14,
+		0x86487844,
+		0x3dc2c339,
+		0x427fdcb7,
+		0xf06e8381,
+		0xe82c9e44,
+		0xeafcc130,
+	}
 
 	var thing [64]byte
-	mix_magic_strings(platformSecret, &thing)
+	mix_magic_strings(magic_strings_littlendian, platformSecret, &thing)
 
 	strlen := 0
 	for ; strlen < len(thing) && thing[strlen] != 0; strlen++ {
@@ -109,5 +107,67 @@ func main() {
 
 	md5digest2str(&platformSecret)
 
-	fmt.Println("Shell secret key: ", string(platformSecret[:]))
+	return string(platformSecret[:])
+}
+
+func AP130(str_serial string) string {
+	platformSecret := [16]byte{'J', 'P', 'E', 'i', 'X', '5', 'c', 'j', 's', 'b', 'c', 'R', 'T', 'P', '3', 'X'}
+
+	//"02301601202422"
+	serial := []byte(str_serial)
+
+	magic_strings_littlendian := []uint32{
+		0x58ad91d4,
+		0x5d8d8176,
+		0xe7ca7c76,
+		0xb2c33e4a,
+		0xc6cd6203,
+		0x11b3895,
+		0x1e581aed,
+		0x67b10ed4,
+	}
+
+	var thing [64]byte
+	mix_magic_strings(magic_strings_littlendian, platformSecret, &thing)
+
+	strlen := 0
+	for ; strlen < len(thing) && thing[strlen] != 0; strlen++ {
+	}
+
+	platformSecret = md5.Sum(thing[:strlen])
+	md5digest2str(&platformSecret)
+
+	//Add serial number
+	serial = append(serial, platformSecret[:]...)
+	platformSecret = md5.Sum(serial)
+
+	md5digest2str(&platformSecret)
+
+	return string(platformSecret[:])
+}
+
+func main() {
+
+	strSerial := flag.String("serial", "", "Device serial number")
+
+	flag.Parse()
+
+	if len(*strSerial) == 0 {
+		fmt.Println("You need the devices serial number")
+		return
+	}
+
+	password := ""
+	switch (*strSerial)[1:4] {
+	case "230":
+		password = AP230(*strSerial)
+	case "130":
+		password = AP130(*strSerial)
+	default:
+		fmt.Println("Unknown device type: ", (*strSerial)[1:4])
+		return
+	}
+
+	fmt.Println(password)
+
 }
