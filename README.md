@@ -1,2 +1,21 @@
-# aerohive-keygen
-Generate key for hidden _shell cli option
+# Aerohive Key Generator
+Aerohive access points enable users to configure devices using a restricted command line shell.  
+There is an undocumented restricted shell command `_shell` which spawns `/bin/sh` if given the correct password. 
+
+This tool generates that password for the `AP230`, and soon the `AP130`, as those are the devices I have on hand.
+
+# Usage
+
+```
+go build .
+./aerohive-keygen --serial 1230124097357
+```
+Enter into the restricted shell, and type `_shell`, enter in the generated password.  
+
+## Todo
+- Add support for generating AP130
+- Detect platform from serial number
+
+
+
+
