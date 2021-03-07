@@ -8,7 +8,7 @@ This tool generates that password for the `AP230`, and soon the `AP130`, as thos
 
 ```
 go build .
-./aerohive-keygen --serial 1230124097357
+./aerohive-keygen --serial <your devices serial number>
 ```
 Enter into the restricted shell, and type `_shell`, enter in the generated password.  
 
