@@ -64,7 +64,7 @@ func md5digest2str(input *[16]byte) {
 	}
 }
 
-func AP230(str_serial string) string {
+func AP230(str_serial string, str_version string) string {
 	platformSecret := [16]byte{'T', 'I', 'U', 't', '8', 'K', 'k', '5', 'A', '7', 'd', '4', 'W', 'i', 'r', 'H'}
 
 	//"02301601202422"
@@ -100,7 +100,7 @@ func AP230(str_serial string) string {
 
 	md5digest2str(&platformSecret)
 
-	version := []byte("10.0")
+	version := []byte(str_version)
 	version = append(version, platformSecret[:]...)
 
 	platformSecret = md5.Sum(version)
@@ -149,6 +149,7 @@ func AP130(str_serial string) string {
 func main() {
 
 	strSerial := flag.String("serial", "", "Device serial number")
+	strVersion := flag.String("version", "", "Firmware version (eg 10.3)")
 
 	flag.Parse()
 
@@ -160,7 +161,12 @@ func main() {
 	password := ""
 	switch (*strSerial)[1:4] {
 	case "230":
-		password = AP230(*strSerial)
+		if len(*strVersion) == 0 {
+			fmt.Println("Assuming version 10.0")
+			*strVersion = "10.0"
+		}
+
+		password = AP230(*strSerial, *strVersion)
 	case "130":
 		password = AP130(*strSerial)
 	default:
