@@ -8,13 +8,14 @@ This tool generates that password for the `AP230` and `AP130`, as those are the 
 
 ```
 go build .
-./aerohive-keygen --serial <your devices serial number>
+./aerohive-keygen --serial <your devices serial number> --version <your firmware version>
 ```
 Enter into the restricted shell, and type `_shell`, enter in the generated password.  
 
 ## Todo
 - ~~Add support for generating AP130 keys~~
 - ~~Detect platform from serial number~~
+- ~~Add version parameter for AP230~~
 
 
 
