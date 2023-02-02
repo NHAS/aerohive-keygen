@@ -161,6 +161,7 @@ func main() {
 	password := ""
 	switch (*strSerial)[1:4] {
 	case "230":
+	case "305":
 		if len(*strVersion) == 0 {
 			fmt.Println("Assuming version 10.0")
 			*strVersion = "10.0"
