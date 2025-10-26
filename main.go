@@ -154,16 +154,18 @@ func main() {
 	flag.Parse()
 
 	if len(*strSerial) == 0 {
-		fmt.Println("You need the devices serial number")
+		fmt.Println("You need to provide the device serial number after --serial")
+		fmt.Println("In the AP normal CLI use show hw-info to retrieve.")
 		return
 	}
 
 	password := ""
 	switch (*strSerial)[1:4] {
-	case "230", "305":
+	case "230", "305", "150", "630":
 		if len(*strVersion) == 0 {
-			fmt.Println("Assuming version 10.0")
-			*strVersion = "10.0"
+			fmt.Println("For the model specified, you need to provide the device version number after --version")
+			fmt.Println("In the AP normal CLI use show version to retrieve.")
+			return
 		}
 
 		password = AP230(*strSerial, *strVersion)
