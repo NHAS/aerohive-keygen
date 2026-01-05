@@ -2,7 +2,7 @@
 Aerohive access points enable users to configure devices using a restricted command line shell.  
 There is an undocumented restricted shell command `_shell` which spawns `/bin/sh` if given the correct password.  
 
-This tool generates that password for the `AP130`, `AP150` , `AP230` & `AP630`.  
+This tool generates that password for the `AP130`, `AP150` , `AP230`, `AP460c` & `AP630`.  
 Other models may apply, which can be tested by extending the case statement in main.go , rebuild and run.  
 For the `AP150` and above you will need to add the version with parameter --version  
 
