@@ -161,7 +161,7 @@ func main() {
 
 	password := ""
 	switch (*strSerial)[1:4] {
-	case "230", "305", "150", "630":
+	case "230", "305", "150", "630", "460":
 		if len(*strVersion) == 0 {
 			fmt.Println("For the model specified, you need to provide the device version number after --version")
 			fmt.Println("In the AP normal CLI use show version to retrieve.")
